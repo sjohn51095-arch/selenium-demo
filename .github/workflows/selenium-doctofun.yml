@@ -29,10 +29,10 @@ jobs:
         run: |
           az acr login --name ${{secrets.ACR_NAME}}
  
-      # # 5️⃣ Build Docker image
-      # - name: Build Docker Image
-      #   run: |
-      #     docker build -f Dockerfile -t ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} .
+      # 5️⃣ Build Docker image
+      - name: Build Docker Image
+        run: |
+          docker build -f Dockerfile -t ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} .
 
       # # 6️⃣ Push Docker image to ACR
       # - name: Push Docker Image
