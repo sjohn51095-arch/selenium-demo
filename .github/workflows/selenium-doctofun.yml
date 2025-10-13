@@ -27,7 +27,7 @@ jobs:
       # 4️⃣ Login to Azure Container Registry
       - name: Docker Login to ACR
         run: |
-          az acr login --name${{secrets.ACR_NAME}}
+          az acr login --name ${{secrets.ACR_NAME}}
  
       # # 5️⃣ Build Docker image
       # - name: Build Docker Image
