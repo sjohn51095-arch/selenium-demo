@@ -1,0 +1,56 @@
+name: CI-CD Docker to Azure Functions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Login to Azure
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # 3️⃣ Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # # 4️⃣ Login to Azure Container Registry
+      # - name: Docker Login to ACR
+      #   run: |
+      #     echo "${{ secrets.AZURE_CREDENTIALS }}" | docker login ${{ secrets.ACR_NAME }}.azurecr.io --username ${{ secrets.ACR_NAME }} --password-stdin
+
+      # # 5️⃣ Build Docker image
+      # - name: Build Docker Image
+      #   run: |
+      #     docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} .
+
+      # # 6️⃣ Push Docker image to ACR
+      # - name: Push Docker Image
+      #   run: |
+      #     docker push ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }}
+
+      # # 7️⃣ Deploy Docker image to Azure Function App
+      # - name: Deploy to Azure Function
+      #   run: |
+      #     az functionapp config container set \
+      #       --name ${{ secrets.FUNCTION_APP_NAME }} \
+      #       --resource-group ${{ secrets.RESOURCE_GROUP }} \
+      #       --docker-custom-image-name ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
+      #       --docker-registry-server-url https://${{ secrets.ACR_NAME }}.azurecr.io \
+      #       --docker-registry-server-user ${{ secrets.ACR_NAME }} \
+      #       --docker-registry-server-password ${{ secrets.AZURE_CREDENTIALS }}
+
+      # # 8️⃣ Restart Azure Function App
+      # - name: Restart Function App
+      #   run: |
+      #     az functionapp restart --name ${{ secrets.FUNCTION_APP_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
