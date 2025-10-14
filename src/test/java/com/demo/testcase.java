@@ -15,7 +15,7 @@ public class testcase {
 	 System.out.println("Starting RemoteWebDriver...");
 
      // Selenium Server URL
-     URL seleniumServerURL = new URL("http://localhost:4444");
+     URL seleniumServerURL = new URL("http://localhost:8080");
 
      // Chrome Options
      ChromeOptions options = new ChromeOptions();
