@@ -46,9 +46,7 @@ jobs:
             --name ${{ secrets.FUNCTION_APP_NAME }} \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
-            --registry-server https://${{ secrets.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.ACR_NAME }} \
-            --registry-password ${{ secrets.AZURE_CREDENTIALS }}
+            --registry-server https://${{ secrets.ACR_NAME }}.azurecr.io 
 
       # 8️⃣ Restart Azure Function App
       - name: Restart Function App
