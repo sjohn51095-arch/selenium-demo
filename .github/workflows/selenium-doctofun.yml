@@ -41,7 +41,7 @@ jobs:
 
       # 7️⃣ Deploy Docker image to Azure Function App
       - name: Deploy to Azure Function
-        run: |
+        run: |  
           az functionapp config container set \
             --name ${{ secrets.FUNCTION_APP_NAME }} \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \

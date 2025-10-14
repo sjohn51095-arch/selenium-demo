@@ -5,31 +5,30 @@ import java.net.URL;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.Test;
 
 public class testcase {
-	  @Test
-	    public void launch() throws MalformedURLException {
-	 System.out.println("Starting RemoteWebDriver...");
 
-     // Selenium Server URL
-     URL seleniumServerURL = new URL("http://localhost:8080");
+    @Test
+    public void launch() throws MalformedURLException {
+        System.out.println("Starting RemoteWebDriver...");
 
-     // Chrome Options
-     ChromeOptions options = new ChromeOptions();
-     options.setBinary("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe");
-     options.addArguments("--remote-allow-origins=*");
+        String seleniumHost = System.getenv("SELENIUM_URL");
+        if (seleniumHost == null) seleniumHost = "http://localhost:4444/wd/hub";
+        URL seleniumServerURL = new URL(seleniumHost);
 
-     // Initialize RemoteWebDriver
-     WebDriver driver = new RemoteWebDriver(seleniumServerURL, options);
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
 
-     // Navigate to a test page
-     driver.get("https://www.google.com");
-     System.out.println("Page title is: " + driver.getTitle());
-
-     // Close the driver
-     driver.quit();
- }
+        WebDriver driver = null;
+        try {
+            driver = new RemoteWebDriver(seleniumServerURL, options);
+            driver.get("https://www.google.com");
+            System.out.println("Page title is: " + driver.getTitle());
+        } finally {
+            if (driver != null) driver.quit();
+        }
+    }
 }
