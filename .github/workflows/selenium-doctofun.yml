@@ -45,10 +45,10 @@ jobs:
           az functionapp config container set \
             --name ${{ secrets.FUNCTION_APP_NAME }} \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --docker-custom-image-name ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
-            --docker-registry-server-url https://${{ secrets.ACR_NAME }}.azurecr.io \
-            --docker-registry-server-user ${{ secrets.ACR_NAME }} \
-            --docker-registry-server-password ${{ secrets.AZURE_CREDENTIALS }}
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
+            --registry-server-url https://${{ secrets.ACR_NAME }}.azurecr.io \
+            --registry-server-user ${{ secrets.ACR_NAME }} \
+            --registry-server-password ${{ secrets.AZURE_CREDENTIALS }}
 
       # 8️⃣ Restart Azure Function App
       - name: Restart Function App
