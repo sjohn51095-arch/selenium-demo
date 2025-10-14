@@ -1,0 +1,51 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - selenium-doctofun
+
+on:
+  push:
+    branches:
+      - test
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to registry
+      uses: docker/login-action@v2
+      with:
+        registry: https://doct0fun.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_569fb2bf8e0b4b4d891ae79d6d2d25b3 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_67dcb0331d0243b4b3b70545c0287c52 }}
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        tags: doct0fun.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_569fb2bf8e0b4b4d891ae79d6d2d25b3 }}/my-function-app:${{ github.sha }}
+        file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'selenium-doctofun'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_acba3d2efefb4ee683b9e79e0c0bfd53 }}
+        images: 'doct0fun.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_569fb2bf8e0b4b4d891ae79d6d2d25b3 }}/my-function-app:${{ github.sha }}'
