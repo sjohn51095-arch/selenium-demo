@@ -15,7 +15,10 @@ public class testcase {
         System.out.println("Starting RemoteWebDriver...");
 
         String seleniumHost = System.getenv("SELENIUM_URL");
-        if (seleniumHost == null) seleniumHost = "http://localhost:4444/wd/hub";
+        if (seleniumHost == null || seleniumHost.isEmpty())
+         seleniumHost = "http://selenium:4444/wd/hub";
+        
+        System.out.println("Connecting to Selenium Hub at: " + seleniumHost); 
         URL seleniumServerURL = new URL(seleniumHost);
 
         ChromeOptions options = new ChromeOptions();

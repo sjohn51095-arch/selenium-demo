@@ -5,6 +5,12 @@ on:
     branches:
       - test
 
+
+env:
+  IMAGE_NAME: my-azure-func
+  SELENIUM_IMAGE: selenium/standalone-chrome:latest
+  LOCATION: South India   
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -39,6 +45,20 @@ jobs:
         run: |
           docker push ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }}
 
+      - name: Deploy Selenium ACI
+        run: |
+          az container create \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --name selenium-aci \
+            --image ${{ env.SELENIUM_IMAGE }} \
+            --cpu 2 --memory 4 \
+            --ports 4444 \
+            --dns-name-label selenium-${{ github.run_number }} \
+            --restart-policy Always
+
+          SELENIUM_URL="http://selenium-${{ github.run_number }}.${{ env.LOCATION }}.azurecontainer.io:4444/wd/hub"
+          echo "SELENIUM_URL=$SELENIUM_URL" >> $GITHUB_ENV    
+
       # 7️⃣ Deploy Docker image to Azure Function App
       - name: Deploy to Azure Function
         run: |  
@@ -49,6 +69,11 @@ jobs:
             --registry-server https://${{ secrets.ACR_NAME }}.azurecr.io \
             --registry-username ${{ secrets.CLIENT_ID }} \
             --registry-password ${{ secrets.CLIENT_SECRET }}
+
+          az functionapp config appsettings set \
+            --name ${{ secrets.FUNCTION_APP_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --settings SELENIUM_URL=${{ env.SELENIUM_URL }}      
 
       # 8️⃣ Restart Azure Function App
       - name: Restart Function App
