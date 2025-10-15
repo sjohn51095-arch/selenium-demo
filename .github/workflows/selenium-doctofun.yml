@@ -89,5 +89,8 @@ jobs:
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --environment managedEnvironment-seleniumRG-966c \
             --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
-            --ingress external
+            --ingress external \
+            --registry-server https://${{ secrets.ACR_NAME }}.azurecr.io \
+            --registry-username ${{ secrets.CLIENT_ID }} \
+            --registry-password ${{ secrets.CLIENT_SECRET }}
           
