@@ -92,7 +92,7 @@ jobs:
       - name: Assign ACR pull role
         run: |
           az role assignment create \
-           --assignee <CLIENT_ID_FROM_IDENTITY> \
+           --assignee ${{ secrets.CLIENT_ID }} \
            --role AcrPull \
           --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RG>/providers/Microsoft.ContainerRegistry/registries/${{ secrets.ACR_NAME }}    
 
