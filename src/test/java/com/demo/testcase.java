@@ -16,7 +16,7 @@ public class testcase {
 
         String seleniumHost = System.getenv("SELENIUM_URL");
         if (seleniumHost == null || seleniumHost.isEmpty())
-         seleniumHost = "http://selenium:4444/wd/hub";
+         seleniumHost = "http://74.225.21.195:4444/wd/hub";
         
         System.out.println("Connecting to Selenium Hub at: " + seleniumHost); 
         URL seleniumServerURL = new URL(seleniumHost);
