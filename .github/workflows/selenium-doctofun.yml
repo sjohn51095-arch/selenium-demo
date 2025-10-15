@@ -60,23 +60,33 @@ jobs:
           SELENIUM_URL="http://selenium-${{ github.run_number }}.${{ env.LOCATION }}.azurecontainer.io:4444/wd/hub"
           echo "SELENIUM_URL=$SELENIUM_URL" >> $GITHUB_ENV    
 
-      # 7️⃣ Deploy Docker image to Azure Function App
-      - name: Deploy to Azure Function
-        run: |  
-          az functionapp config container set \
-            --name ${{ secrets.FUNCTION_APP_NAME }} \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
-            --registry-server https://${{ secrets.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.CLIENT_ID }} \
-            --registry-password ${{ secrets.CLIENT_SECRET }}
+      # # 7️⃣ Deploy Docker image to Azure Container Environment Apps
+      # - name: Deploy to Azure Function
+      #   run: |  
+      #     az functionapp config container set \
+      #       --name ${{ secrets.FUNCTION_APP_NAME }} \
+      #       --resource-group ${{ secrets.RESOURCE_GROUP }} \
+      #       --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
+      #       --registry-server https://${{ secrets.ACR_NAME }}.azurecr.io \
+      #       --registry-username ${{ secrets.CLIENT_ID }} \
+      #       --registry-password ${{ secrets.CLIENT_SECRET }}
 
-          az functionapp config appsettings set \
-            --name ${{ secrets.FUNCTION_APP_NAME }} \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --settings SELENIUM_URL=${{ env.SELENIUM_URL }}      
+      #     az functionapp config appsettings set \
+      #       --name ${{ secrets.FUNCTION_APP_NAME }} \
+      #       --resource-group ${{ secrets.RESOURCE_GROUP }} \
+      #       --settings SELENIUM_URL=${{ env.SELENIUM_URL }}      
 
-      # 8️⃣ Restart Azure Function App
-      - name: Restart Function App
+      # # 8️⃣ Restart Azure Function App
+      # - name: Restart Function App
+      #   run: |
+      #     az functionapp restart --name ${{ secrets.FUNCTION_APP_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
+
+      # Deploy Cotainer apps 
+      - name: Deploy to Container App
         run: |
-          az functionapp restart --name ${{ secrets.FUNCTION_APP_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
+          az containerapp create \
+            --name ${{ secrets.FUNCTION_APP_NAME }}
+            --resource-group ${{ secrets.RESOURCE_GROUP }}
+            --environment managedEnvironment-seleniumRG-bae9
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }}
+            --ingress external
