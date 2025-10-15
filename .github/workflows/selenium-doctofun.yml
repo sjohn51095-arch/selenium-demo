@@ -84,7 +84,7 @@ jobs:
       # Deploy Cotainer apps 
       - name: Deploy to Container App
         run: |
-          az containerapp create \
+          az containerapp update \
             --name ${{ secrets.FUNCTION_APP_NAME }}
             --resource-group ${{ secrets.RESOURCE_GROUP }}
             --environment managedEnvironment-seleniumRG-bae9
