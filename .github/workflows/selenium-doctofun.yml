@@ -9,7 +9,7 @@ on:
 env:
   IMAGE_NAME: my-azure-func
   SELENIUM_IMAGE: selenium/standalone-chrome:latest
-  LOCATION: South India   
+  LOCATION: southindia 
 
 jobs:
   build-and-deploy:
