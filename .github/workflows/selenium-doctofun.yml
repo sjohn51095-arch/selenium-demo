@@ -54,7 +54,8 @@ jobs:
             --cpu 2 --memory 4 \
             --ports 4444 \
             --dns-name-label selenium-${{ github.run_number }} \
-            --restart-policy Always
+            --restart-policy Always \
+            --os-type Linux
 
           SELENIUM_URL="http://selenium-${{ github.run_number }}.${{ env.LOCATION }}.azurecontainer.io:4444/wd/hub"
           echo "SELENIUM_URL=$SELENIUM_URL" >> $GITHUB_ENV    
