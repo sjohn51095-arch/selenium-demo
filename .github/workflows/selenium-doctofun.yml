@@ -81,20 +81,20 @@ jobs:
       #   run: |
       #     az functionapp restart --name ${{ secrets.FUNCTION_APP_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
 
-      # Enabling Identity 
-      - name: Enabling Identity
-        run: |
-          az containerapp identity assign \
-            --name ${{ secrets.FUNCTION_APP_NAME }} \
-            --resource-group ${{ secrets.RESOURCE_GROUP }}
+      # # Enabling Identity 
+      # - name: Enabling Identity
+      #   run: |
+      #     az containerapp identity assign \
+      #       --name ${{ secrets.FUNCTION_APP_NAME }} \
+      #       --resource-group ${{ secrets.RESOURCE_GROUP }}
 
-      # Assign ACR pull role 
-      - name: Assign ACR pull role
-        run: |
-          az role assignment create \
-           --assignee ${{ secrets.CLIENT_ID }} \
-           --role AcrPull \
-          --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RG>/providers/Microsoft.ContainerRegistry/registries/${{ secrets.ACR_NAME }}    
+      # # Assign ACR pull role 
+      # - name: Assign ACR pull role
+      #   run: |
+      #     az role assignment create \
+      #      --assignee ${{ secrets.CLIENT_ID }} \
+      #      --role AcrPull \
+      #     --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RG>/providers/Microsoft.ContainerRegistry/registries/${{ secrets.ACR_NAME }}    
 
       # Deploy Cotainer apps 
       - name: Deploy to Container App
@@ -106,4 +106,6 @@ jobs:
             --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
             --ingress external \
             --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
+            --registry-username ${{ secrets.CLIENT_ID }} \
+            --registry-password ${{ secrets.CLIENT_SECRET }}
           
