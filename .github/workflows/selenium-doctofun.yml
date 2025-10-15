@@ -81,6 +81,21 @@ jobs:
       #   run: |
       #     az functionapp restart --name ${{ secrets.FUNCTION_APP_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
 
+      # Enabling Identity 
+      - name: Enabling Identity
+        run: |
+          az containerapp identity assign \
+            --name ${{ secrets.FUNCTION_APP_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }}
+
+      # Assign ACR pull role 
+      - name: Assign ACR pull role
+        run: |
+          az role assignment create \
+           --assignee <CLIENT_ID_FROM_IDENTITY> \
+           --role AcrPull \
+          --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RG>/providers/Microsoft.ContainerRegistry/registries/${{ secrets.ACR_NAME }}    
+
       # Deploy Cotainer apps 
       - name: Deploy to Container App
         run: |
@@ -90,7 +105,5 @@ jobs:
             --environment managedEnvironment-seleniumRG-966c \
             --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
             --ingress external \
-            --registry-server https://${{ secrets.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.CLIENT_ID }} \
-            --registry-password ${{ secrets.CLIENT_SECRET }}
+            --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
           
