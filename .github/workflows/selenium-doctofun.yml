@@ -87,7 +87,7 @@ jobs:
           az containerapp create \
             --name ${{ secrets.FUNCTION_APP_NAME }} \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --environment managedEnvironment-seleniumRG-bae9 \
+            --environment managedEnvironment-seleniumRG-966c \
             --image ${{ secrets.ACR_NAME }}.azurecr.io/my-function-app:${{ github.sha }} \
             --ingress external
           
